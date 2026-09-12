@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Epic Global Training</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{--bg:#0c0c10;--card:#17171e;--card2:#1f1f27;--line:#2a2a35;--purple:#8b5cf6;
+--purple2:#7c3aed;--muted:#8f8f9b;--hot:#fb923c;--new:#4ade80;--blue:#3b82f6;--gold:#fbbf24;--red:#ef4444}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:#fff;font-family:-apple-system,'Segoe UI',Roboto,sans-serif;
+max-width:480px;margin:0 auto;min-height:100vh;padding-bottom:96px}
+.muted{color:var(--muted)}.sm{font-size:12px}.big{font-size:22px;font-weight:700}
+.hdr{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--card);
+border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.avatar{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--purple2));
+display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;border:2px solid #a78bfa}
+.btn{border:none;border-radius:14px;padding:12px 16px;font-weight:600;font-size:15px;cursor:pointer;color:#fff}
+.btn.p{background:linear-gradient(135deg,var(--purple),var(--purple2));width:100%}
+.btn:disabled{opacity:.45}
+.btn.gold{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#111;width:100%}
+.btn.blue{background:linear-gradient(135deg,#60a5fa,#3b82f6);width:100%}
+.btn.sm{padding:8px 14px;font-size:13px;width:auto}
+.btn.dep{margin-left:auto;background:linear-gradient(135deg,var(--purple),var(--purple2))}
+.page{padding:14px 16px}
+.bottom{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;background:var(--card);
+border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 4px calc(8px + env(safe-area-inset-bottom));z-index:10}
+.nav{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted);font-size:11px;
+background:none;border:none;cursor:pointer;padding:4px 10px}
+.nav .ic{font-size:20px}
+.nav.on{color:var(--purple)}
+.nav.home{margin-top:-28px;background:linear-gradient(135deg,var(--purple),var(--purple2));
+width:62px;height:62px;border-radius:50%;justify-content:center;color:#fff;
+box-shadow:0 6px 20px rgba(139,92,246,.5)}
+.nav.home.on{color:#fff}
+.live{display:flex;align-items:center;gap:10px;margin-bottom:14px;overflow:hidden}
+.live .lbl{writing-mode:vertical-rl;transform:rotate(180deg);font-size:13px;color:var(--muted);letter-spacing:2px}
+.live .dot{width:8px;height:8px;border-radius:50%;background:var(--new);margin-bottom:4px;animation:blink 1.2s infinite}
+@keyframes blink{50%{opacity:.3}}
+.marquee{display:flex;gap:8px;animation:mq 14s linear infinite}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.mq-item{min-width:58px;height:58px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+font-size:26px;background:linear-gradient(135deg,#312e81,#1e3a8a);border:1px solid #3730a3}
+.card{border-radius:20px;padding:18px;margin-bottom:14px;position:relative;overflow:hidden;cursor:pointer;border:1px solid var(--line)}
+.card h2{font-size:26px;letter-spacing:1px;margin-top:26px;text-shadow:0 2px 8px rgba(0,0,0,.4)}
+.card.rocket{background:linear-gradient(135deg,#1d4ed8,#3b82f6 60%,#60a5fa);min-height:120px}
+.card.pvp{background:linear-gradient(135deg,#b45309,#f59e0b);min-height:110px}
+.card.hub{background:linear-gradient(135deg,#6d28d9,#a855f7);min-height:110px}
+.card.free24{background:radial-gradient(circle at 30% 20%,#713f12,#292524);text-align:center}
+.card.free{background:radial-gradient(circle at 70% 20%,#14532d,#292524);text-align:center}
+.card .art{position:absolute;right:10px;top:8px;font-size:52px;opacity:.9}
+.badge{display:inline-block;background:#fff;color:#111;font-size:11px;font-weight:800;border-radius:8px;padding:3px 8px}
+.badge.hot{background:linear-gradient(135deg,#fb923c,#f97316);color:#fff}
+.badge.new{background:linear-gradient(135deg,#4ade80,#22c55e);color:#fff}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}
+.row{display:flex;align-items:center;gap:10px;justify-content:space-between}
+input,select{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:14px;
+color:#fff;padding:13px 14px;font-size:16px;outline:none}
+input:focus{border-color:var(--purple)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.chip{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:9px 14px;color:#fff;cursor:pointer}
+.chip.on{background:linear-gradient(135deg,var(--purple),var(--purple2));border-color:transparent}
+.hist{display:flex;gap:8px;overflow-x:auto;padding:4px 0}
+.hx{min-width:64px;text-align:center;border-radius:10px;padding:6px 0;font-weight:700;font-size:13px}
+.hx.w{background:rgba(74,222,128,.15);color:var(--new);border:1px solid #166534}
+.hx.l{background:rgba(239,68,68,.15);color:var(--red);border:1px solid #7f1d1d}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gift-card{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;text-align:center}
+.gift-card .im{height:110px;display:flex;align-items:center;justify-content:center;font-size:56px;
+background:radial-gradient(circle at 50% 30%,#2e2e3a,#17171e)}
+.gift-card .bd{padding:10px}
+.gift-card .nm{font-weight:600;margin-bottom:8px}
+.task{background:var(--card2);border-radius:16px;padding:14px;margin-bottom:10px}
+.bar{height:6px;background:#2c2c38;border-radius:4px;margin:8px 0;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--purple),#a78bfa);border-radius:4px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--card);border-radius:24px 24px 0 0;width:100%;max-width:480px;max-height:88vh;overflow-y:auto;padding:18px 16px calc(20px + env(safe-area-inset-bottom))}
+.sheet h3{font-size:20px;margin-bottom:14px}
+.tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:#26262f;border:1px solid var(--line);
+padding:11px 18px;border-radius:14px;z-index:99;font-size:14px;max-width:90%;text-align:center}
+.plinko-board{display:grid;grid-template-columns:repeat(9,1fr);gap:6px;margin:16px 0}
+.slot{border-radius:10px;padding:10px 0;text-align:center;font-weight:700;font-size:12px;background:var(--card2);border:1px solid var(--line)}
+.slot.hit{background:linear-gradient(135deg,var(--purple),var(--purple2));border-color:transparent;transform:scale(1.1)}
+.ball{font-size:34px;text-align:center;transition:transform .8s ease}
+.trophy1{background:linear-gradient(135deg,#fbbf24,#b45309);border-radius:16px;padding:14px;margin-bottom:10px}
+.trophy2{background:linear-gradient(135deg,#9ca3af,#4b5563);border-radius:16px;padding:14px;margin-bottom:10px}
+.trophy3{background:linear-gradient(135deg,#fb923c,#9a3412);border-radius:16px;padding:14px;margin-bottom:10px}
+.lb-row{background:var(--card2);border-radius:14px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.count{background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.4);color:var(--gold);
+border-radius:14px;padding:12px 18px;font-weight:800;font-size:18px}
+.rocket-emoji{font-size:72px;text-align:center;transition:transform 2.4s ease-out}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="modalRoot"></div>
+<div id="toastRoot"></div>
+<script>
+const tg = window.Telegram.WebApp;
+tg.expand(); tg.setHeaderColor('#0c0c10'); tg.setBackgroundColor('#0c0c10');
+const USER = (tg.initDataUnsafe && tg.initDataUnsafe.user) || {id: 0, first_name: 'Guest'};
+const uid = USER.id;
+const BOT_USERNAME = 'epic_global_training_bot';
+const RATE = 100000 / 15;
+let ME = {balance: 0, tickets: 0, referrals: 0, ref_earned: 0, tasks: [], inventory: []};
+let page = 'home', earnTab = 'earn', depTab = 'stars', busy = false;
+
+async function api(path, data) {
+  const r = await fetch(path, {method: data ? 'POST' : 'GET',
+    headers: {'Content-Type': 'application/json'},
+    body: data ? JSON.stringify(data) : undefined});
+  return r.json();
+}
+async function refresh() { ME = await api('/api/me?user_id=' + uid); }
+function fmt(n) { return Number(n).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
+function toast(msg, ms = 2600) {
+  const t = document.createElement('div'); t.className = 'toast'; t.innerHTML = msg;
+  document.getElementById('toastRoot').appendChild(t);
+  setTimeout(() => t.remove(), ms);
+}
+function go(p) { page = p; render(); window.scrollTo(0, 0); }
+
+function header() {
+  return `<div class="hdr"><div class="avatar">${(USER.first_name || 'G')[0]}</div>
+    <div><div class="muted sm">Your balance</div>
+    <div class="big">💎 ${fmt(ME.balance)}</div></div>
+    <button class="btn dep" onclick="openDeposit()">🪪 Deposit</button></div>`;
+}
+function navHtml() {
+  const items = [['backpack', '🎒', 'Backpack'], ['invite', '👥', 'Invite'],
+                 ['home', '🏠', 'Home'], ['leaderboard', '🏆', 'Leaderboard'], ['earn', '💰', 'Earn']];
+  return `<div class="bottom">${items.map(([p, ic, nm]) =>
+    `<button class="nav ${p === 'home' ? 'home' : ''} ${page === p ? 'on' : ''}" onclick="go('${p}')">
+     <span class="ic">${ic}</span>${p === 'home' ? '' : nm}</button>`).join('')}</div>`;
+}
+
+/* ---------- HOME ---------- */
+function vHome() {
+  const icons = ['🖐️','💎','🧴','🏆','🗿','👑','🐸','⌚','💍','🧢','🚀','🐸','💎','🖐️'];
+  const row = icons.map(i => `<div class="mq-item">${i}</div>`).join('');
+  return `
+  <div class="live"><div><div class="dot"></div><div class="lbl">Live</div></div>
+    <div style="overflow:hidden;flex:1"><div class="marquee">${row}${row}</div></div></div>
+
+  <div class="card rocket" onclick="go('rocket')">
+    <span class="badge hot">⚡ HOT!</span><div class="art">🚀</div>
+    <h2>🚀 ROCKET</h2><div class="muted sm">x1.2 · x2.7 · x7.67</div></div>
+
+  <div class="card pvp" onclick="go('pvp')">
+    <span class="badge new">🆕 NEW!</span><div class="art">⚔️</div>
+    <h2>⚔️ PVP</h2><div class="muted sm" style="color:#fff8">Battle against players</div></div>
+
+  <div class="card hub" onclick="go('hub')">
+    <span class="badge hot">🔥 HOT</span><div class="art">🎮</div>
+    <h2>🎮 PLAY HUB</h2><div class="muted sm" style="color:#fff8">Upgrade · Plinko · Boxes</div></div>
+
+  <div class="duo">
+    <div class="card free24" onclick="freeBox('free24')"><h3>FREE24</h3><div style="font-size:44px">🪙</div>
+      <div class="muted sm">Kunlik bepul quti</div></div>
+    <div class="card free" onclick="freeBox('free')"><h3>FREE</h3><div style="font-size:44px">🎁</div>
+      <div class="muted sm">Kunlik bepul sovg'a</div></div>
+  </div>`;
+}
+
+/* ---------- PLAY HUB ---------- */
+async function vHub() {
+  const boxes = await api('/api/boxes');
+  return `<div class="card rocket" style="background:linear-gradient(135deg,#16a34a,#4ade80)" onclick="go('upgrade')">
+      <span class="badge hot">🔥 HOT</span><div class="art">⬆️</div><h2>⬆️ Upgrade</h2></div>
+  <div class="card hub" onclick="go('plinko')">
+      <span class="badge new">🆕 NEW</span><div class="art">🔵</div><h2>🔵 Plinko</h2></div>
+  <h3 style="margin:6px 0 12px">🎁 Gift Boxes</h3>
+  <div class="grid2">${boxes.map(b => `
+    <div class="gift-card"><div class="im">${b.img}</div><div class="bd">
+      <div class="nm">${b.name}</div>
+      <button class="btn p sm" onclick="openBox('${b.id}')">${fmt(b.price)} 💎</button>
+    </div></div>`).join('')}</div>`;
+}
+
+/* ---------- ROCKET ---------- */
+let rocketHist = [];
+function vRocket() {
+  return `<div class="panel"><span class="badge hot">⚡ HOT!</span>
+    <div id="rocketStage"><div class="rocket-emoji" id="rocketEmoji">🚀</div>
+    <div class="big" style="text-align:center" id="mult">x1.00</div></div>
+    <div class="hist" style="margin-top:12px">${rocketHist.map(h =>
+      `<div class="hx ${h.win ? 'w' : 'l'}">x${h.mult}</div>`).join('')}</div></div>
+  <div class="panel">
+    <div class="muted sm">Bet amount</div>
+    <input id="bet" type="number" value="10" min="1" style="margin:8px 0">
+    <button class="btn blue" id="betBtn" onclick="playRocket()">Place bet</button>
+    <div class="muted sm" style="margin-top:10px">Auto cash-out: x1.20</div>
+  </div>
+  <div class="panel"><div class="muted sm">Recent players</div>
+    ${[['Abu M','190.00',228],['ليث','28.00',33.6],['V','19.00',22.8]].map(p =>
+    `<div class="lb-row"><div>👤 ${p[0]}</div><div class="muted sm">${p[1]} x1.20</div>
+     <div style="color:var(--new)">💎 ${fmt(p[2])}</div></div>`).join('')}</div>`;
+}
+async function playRocket() {
+  if (busy) return;
+  const bet = parseFloat(document.getElementById('bet').value);
+  if (!bet || bet <= 0) return toast('Bet kiriting!');
+  busy = true;
+  const btn = document.getElementById('betBtn'); btn.disabled = true;
+  const r = await api('/api/game/rocket', {user_id: uid, bet});
+  if (r.error) { busy = false; btn.disabled = false; return toast('❌ ' + r.error); }
+  const em = document.getElementById('rocketEmoji'), mt = document.getElementById('mult');
+  em.style.transform = 'translateY(-30px) scale(1.3)'; mt.textContent = 'x1.00';
+  let cur = 1.0;
+  const iv = setInterval(() => {
+    cur += 0.03;
+    if (cur >= r.crash) { cur = r.crash; clearInterval(iv);
+      em.style.transform = ''; mt.textContent = '💥 x' + r.crash.toFixed(2);
+      mt.style.color = r.win ? 'var(--new)' : 'var(--red)';
+      rocketHist.unshift({mult: r.win ? '1.20' : r.crash.toFixed(2), win: r.win});
+      toast(r.win ? `✅ Yutdingiz! +${fmt(r.payout)} TON` : `💥 Crash! x${r.crash} — yutqazdingiz`);
+      setTimeout(async () => { mt.style.color = ''; busy = false; await refresh(); render(); }, 1400);
+    } else mt.textContent = 'x' + cur.toFixed(2);
+  }, 40);
+}
+
+/* ---------- PLINKO ---------- */
+function vPlinko() {
+  const mults = [5, 2, 1.2, 0.7, 0.4, 0.7, 1.2, 2, 5];
+  return `<div class="panel"><span class="badge new">🆕 NEW</span>
+    <div class="ball" id="plinkoBall">🔵</div>
+    <div class="plinko-board" id="plinkoBoard">${mults.map(m =>
+      `<div class="slot" data-m="${m}">x${m}</div>`).join('')}</div></div>
+  <div class="panel"><div class="muted sm">Bet amount</div>
+    <input id="bet" type="number" value="10" min="1" style="margin:8px 0">
+    <button class="btn p" id="betBtn" onclick="playPlinko()">Drop ball</button></div>`;
+}
+async function playPlinko() {
+  if (busy) return;
+  const bet = parseFloat(document.getElementById('bet').value);
+  if (!bet || bet <= 0) return toast('Bet kiriting!');
+  busy = true;
+  const btn = document.getElementById('betBtn'); btn.disabled = true;
+  const r = await api('/api/game/plinko', {user_id: uid, bet});
+  if (r.error) { busy = false; btn.disabled = false; return toast('❌ ' + r.error); }
+  const ball = document.getElementById('plinkoBall'), slots = document.querySelectorAll('.slot');
+  slots.forEach(s => s.classList.remove('hit'));
+  ball.style.transform = 'translateY(20px) rotate(360deg)';
+  setTimeout(() => {
+    ball.style.transform = '';
+    slots[r.slot].classList.add('hit');
+    toast(r.multiplier >= 1 ? `🎯 x${r.multiplier}! +${fmt(r.payout)} TON` : `💧 x${r.multiplier} — ${fmt(r.payout)} TON`);
+    setTimeout(async () => { busy = false; await refresh(); }, 1200);
+  }, 800);
+}
+
+/* ---------- PVP ---------- */
+function vPvp() {
+  return `<div class="panel" style="text-align:center;padding:26px">
+    <div class="muted sm">TOTAL POOL</div>
+    <div class="big" style="font-size:34px;margin:6px 0">💎 0.00</div>
+    <div class="muted sm">Game #${Math.floor(Math.random() * 90000 + 10000)}</div>
+    <div style="margin:18px 0"><span class="badge hot">WAITING</span></div>
+    <input id="bet" type="number" value="10" min="1" style="margin-bottom:12px">
+    <button class="btn gold" onclick="joinBattle()">⚔️ Join the Battle</button>
+    <div class="muted sm" style="margin-top:12px">G'olib 95% oladi · 5% komissiya</div></div>
+  <div class="panel"><div class="muted sm">Players</div>
+    <div class="lb-row"><div>👤 Siz</div><div class="muted sm">kutilmoqda...</div></div></div>`;
+}
+async function joinBattle() {
+  const bet = parseFloat(document.getElementById('bet').value);
+  if (!bet || bet <= 0) return toast('Bet kiriting!');
+  const r = await api('/api/game/pvp', {user_id: uid, bet});
+  if (r.error) return toast('❌ ' + r.error);
+  if (r.status === 'waiting') toast('⏳ Raqib kutilmoqda... Birozdan so\'ng qayta urining');
+  else toast(r.win ? `🏆 G\'alaba! +${fmt(r.prize)} TON` : '😢 Mag\'lubiyat');
+  await refresh(); render();
+}
+
+/* ---------- UPGRADE ---------- */
+function vUpgrade() {
+  const inv = ME.inventory;
+  if (!inv.length) return `<div class="panel" style="text-align:center;padding:40px 16px">
+    <div style="font-size:50px">🎒</div><h3>Backpack bo'sh</h3>
+    <p class="muted">Avval quti oching!</p>
+    <button class="btn p" style="margin-top:14px" onclick="go('hub')">🎁 Boxes</button></div>`;
+  return `<div class="panel"><span class="badge hot">🔥 HOT</span>
+    <div class="muted sm" style="margin:10px 0 6px">Sovg'ani tanlang</div>
+    <select id="upGift">${inv.map(g =>
+      `<option value="${g.id}">${g.emoji} ${g.name} — ${fmt(g.value)} TON</option>`).join('')}</select>
+    <div class="muted sm" style="margin:14px 0 6px">Target qiymat (TON)</div>
+    <input id="upTarget" type="number" placeholder="masalan 60" oninput="upChance()">
+    <div class="muted sm" id="upChanceTxt" style="margin-top:8px">Imkoniyat: —</div>
+    <button class="btn p" style="margin-top:12px" onclick="doUpgrade()">⬆️ Upgrade</button></div>`;
+}
+function upChance() {
+  const g = ME.inventory.find(x => x.id == document.getElementById('upGift').value);
+  const t = parseFloat(document.getElementById('upTarget').value) || 0;
+  document.getElementById('upChanceTxt').textContent = t > g.value
+    ? 'Imkoniyat: ' + ((g.value / t) * 100).toFixed(1) + '%' : 'Imkoniyat: —';
+}
+async function doUpgrade() {
+  const gift_id = parseInt(document.getElementById('upGift').value);
+  const target = parseFloat(document.getElementById('upTarget').value);
+  if (!target) return toast('Target kiriting!');
+  const r = await api('/api/game/upgrade', {user_id: uid, gift_id, target});
+  if (r.error) return toast('❌ ' + r.error);
+  toast(r.win ? `✅ Upgrade muvaffaqiyatli! ${r.emoji} ${r.name}` : '💨 Sovg\'a yo\'qoldi...');
+  await refresh(); render();
+}
+
+/* ---------- BACKPACK ---------- */
+function vBackpack() {
+  const inv = ME.inventory;
+  if (!inv.length) return `<div class="panel" style="text-align:center;padding:40px 16px">
+    <div style="font-size:50px">💎</div><h3>Your backpack is empty</h3>
+    <p class="muted">Open boxes and win gifts!</p>
+    <button class="btn p" style="margin-top:14px" onclick="go('hub')">🎁 Buy gifts</button></div>`;
+  return `<h2 style="margin-bottom:14px">Backpack</h2>
+  <div class="grid2">${inv.map(g => `
+    <div class="gift-card"><div class="im">${g.emoji}</div><div class="bd">
+      <div class="nm">${g.name}</div><div class="muted sm" style="margin-bottom:8px">${fmt(g.value)} TON</div>
+      <button class="btn p sm" onclick="sendGiftFlow(${g.id})">📤 Send</button>
+    </div></div>`).join('')}</div>`;
+}
+async function sendGiftFlow(giftId) {
+  openDeposit('gift', giftId);
+}
+
+/* ---------- INVITE ---------- */
+function vInvite() {
+  const link = 'https://t.me/' + BOT_USERNAME + '?start=ref_' + uid;
+  return `<div class="panel row" style="justify-content:flex-start;gap:14px">
+    <div style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,var(--purple),var(--purple2));
+    display:flex;align-items:center;justify-content:center;font-size:24px">👥</div>
+    <div><h3>Earn up to <span style="color:var(--purple)">10%</span></h3>
+    <div class="mut
